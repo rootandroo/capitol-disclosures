@@ -1,4 +1,4 @@
-const { token } = require('./config.json');
+// const { token } = require('./config.json');
 const { Client, Intents, Collection } = require('discord.js');
 const { connectDatabase } = require('./database/dbConnect')
 const path = require('node:path');
@@ -37,4 +37,4 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-client.login(token);
+client.login(process.env.TOKEN);
