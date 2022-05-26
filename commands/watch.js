@@ -1,20 +1,55 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { fetchDisclosures, parseDisclosures, fetchDocuments } = require('../house-reports')
 const ReprModel = require('../database/models/ReprModel');
+const DiscModel = require('../database/models/DiscModel');
+const { MessageEmbed } = require('discord.js');
+
 let monitor;
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('watch')
-		.setDescription('Monitors disclosures for new reports.'),
-	async execute(interaction) {
-        const members = await ReprModel.find({})
-        
+		.setDescription('Monitors disclosures for new reports.')
+        .addIntegerOption(option => 
+            option.setName('interval')
+            .setDescription('Enter how often to check for new disclosures in hours.')
+            .setRequired(true)),
+	async execute(interaction) {        
         if (!monitor) {
-            const interval = 60 * 1000
+            const hours = interaction.options.getInteger('interval')
+            const interval = hours * 60 * 60 * 1000
             monitor = setInterval(async () => {
+                const timestamp = new Date(Date.now());
+                const year = timestamp.getFullYear();
 
-                console.log('TEST');
+                console.log(`Fetching new financial disclosures for the year [${year}].`);
+                const disclosures = await fetchDisclosures(year);
+                const members = await ReprModel.find();
+                const parsedDisclosures = await parseDisclosures(disclosures, members);
 
+                const uniqueDisclosures = []
+                for (disc of parsedDisclosures) {
+                    let doc = await DiscModel.findOne({docID: disc.DocID})
+                    if (!doc) {
+                        disclosureDoc = await DiscModel.create({
+                            docID: disc.DocID,
+                            last: disc.Last,
+                            first: disc.First });
+                        await disclosureDoc.save();
+                        uniqueDisclosures.push(disc);
+                    }
+                };
+                console.log(`Found ${uniqueDisclosures.length} new disclosures.`);
+                const documents = await fetchDocuments(uniqueDisclosures, year);
+
+                for (doc of documents) {
+                    const reportEmbed = new MessageEmbed()
+                        .setColor('#0099ff')
+                        .setTitle('Financial Disclosure Report')
+                        .setURL(doc.report)
+                        .setDescription(`Representative: ${doc.first} ${doc.last}`)
+                    interaction.channel.send({ embeds: [reportEmbed] });
+                }
             }, interval)
             await interaction.reply(`Checking for new disclosure reports every ${interval / (1000 * 60)} minutes.`);
         } else {
