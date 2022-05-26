@@ -10,22 +10,25 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('watch')
 		.setDescription('Monitors disclosures for new reports.')
-        .addStringOption(option => {
+        .addStringOption(option => 
             option.setName('metric')
             .setDescription('Choose metric of time for interval.')
+            .setRequired(true)
             .addChoices({ name: 'Seconds', value: 'seconds' })
             .addChoices({ name: 'Minutes', value: 'minutes' })
-            .addChoices({ name: 'Hours', value: 'hours' })
-            .setRequired(true)
-        })
+            .addChoices({ name: 'Hours', value: 'hours' }))
         .addIntegerOption(option => 
             option.setName('interval')
             .setDescription('Enter how often to check for new disclosures in selected metric of time.')
             .setRequired(true)),
 	async execute(interaction) {        
         if (!monitor) {
-            const hours = interaction.options.getInteger('interval')
-            const interval = hours * 60 * 60 * 1000
+            const metric = interaction.options.getString('metric')
+            const unit = interaction.options.getInteger('interval')
+            const interval = (metric == "hours") ? unit * 60 * 60 * 1000 
+                : (metric == "minutes") ? unit * 60 * 1000 
+                : unit * 1000
+
             monitor = setInterval(async () => {
                 const timestamp = new Date(Date.now());
                 const year = timestamp.getFullYear();
@@ -61,7 +64,7 @@ module.exports = {
                     interaction.channel.send({ embeds: [reportEmbed] });
                 }
             }, interval)
-            await interaction.reply(`Checking for new disclosure reports every ${interval / (1000 * 60)} minutes.`);
+            await interaction.reply(`Checking for new disclosure reports every ${unit} ${metric}.`);
         } else {
             clearInterval(monitor);
             monitor = null;
