@@ -10,9 +10,17 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('watch')
 		.setDescription('Monitors disclosures for new reports.')
+        .addStringOption(option => {
+            option.setName('metric')
+            .setDescription('Choose metric of time for interval.')
+            .addChoices({ name: 'Seconds', value: 'seconds' })
+            .addChoices({ name: 'Minutes', value: 'minutes' })
+            .addChoices({ name: 'Hours', value: 'hours' })
+            .setRequired(true)
+        })
         .addIntegerOption(option => 
             option.setName('interval')
-            .setDescription('Enter how often to check for new disclosures in hours.')
+            .setDescription('Enter how often to check for new disclosures in selected metric of time.')
             .setRequired(true)),
 	async execute(interaction) {        
         if (!monitor) {
@@ -47,7 +55,9 @@ module.exports = {
                         .setColor('#0099ff')
                         .setTitle('Financial Disclosure Report')
                         .setURL(doc.report)
-                        .setDescription(`Representative: ${doc.first} ${doc.last}`)
+                        .addField('Representative', `${doc.first} ${doc.last}`, true)
+                        .addField('Date', doc.date)
+                        .addField('State', doc.state)
                     interaction.channel.send({ embeds: [reportEmbed] });
                 }
             }, interval)

@@ -27,7 +27,9 @@ const parseDisclosures = (disclosures, members) => {
             row[header[index]] = field
             return row;
         }, {})   
-        let member = members.find(member => member.last === row.Last && member.first === row.First)
+        let member = members.find(member => 
+            member.last.toLowerCase() === row?.Last?.toLowerCase() && 
+            member.first.toLowerCase() === row?.First?.toLowerCase())
         if (member) result.push(row)
     }
     return result
@@ -37,26 +39,17 @@ const fetchDocuments = async (disclosures, year) => {
     const documents = [];
     for (disclosure of disclosures) {
         const DocID = disclosure["DocID"]
-        const url = `https://disclosures-clerk.house.gov/public_disc/ptr-pdfs/${year}/${DocID}.pdf`
-        documents.push({first: disclosure.First, last: disclosure.Last, report: url})
+        const reportType = (disclosure["FilingType"] == "P") ? "ptr-pdfs" : "financial-pdfs"
+        const url = `https://disclosures-clerk.house.gov/public_disc/${reportType}/${year}/${DocID}.pdf`
+        documents.push({
+            first: disclosure.First,
+            last: disclosure.Last,
+            report: url,
+            date: disclosure.FilingDate,
+            state: disclosure.FilingType
+        })
     }
     return documents;
 }
-
-
-
-const main = async () => {
-    const members = [
-        {last: 'Pelosi', first: 'Nancy'},
-    ]
-    const year = 2022;
-    const text = await fetchDisclosures(year);
-    const disclosures = parseDisclosures(text, members);
-    const documents = await fetchDocuments(disclosures, year);
-    console.log(documents)
-}
-
-// main()
-
 
 module.exports = { fetchDisclosures, parseDisclosures, fetchDocuments };

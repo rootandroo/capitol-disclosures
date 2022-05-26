@@ -4,7 +4,7 @@ const ReprModel = require('../database/models/ReprModel');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('toggle')
-		.setDescription('Add or remove the names of Rep. to be monitored. Re-run watch for changes to take effect.')
+		.setDescription('Add or remove the names of Rep. to be monitored.')
         .addStringOption(option => 
             option.setName('action')
             .setDescription('Select action.')
