@@ -26,7 +26,7 @@ module.exports = {
         const first = interaction.options.getString('first');
         const guildId = interaction.guildId
 
-        if (!guildID) return;
+        if (!guildId) return;
         
         await interaction.deferReply();
         

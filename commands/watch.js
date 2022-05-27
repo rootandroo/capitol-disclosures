@@ -30,7 +30,7 @@ module.exports = {
 	async execute(interaction) {        
         const guildId = interaction.guildId
         
-        if (!guildID) return;
+        if (!guildId) return;
 
         if (!monitor[guildId]) {
             const metric = interaction.options.getString('metric')
