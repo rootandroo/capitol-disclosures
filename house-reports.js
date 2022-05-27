@@ -46,7 +46,8 @@ const fetchDocuments = async (disclosures, year) => {
             last: disclosure.Last,
             report: url,
             date: disclosure.FilingDate,
-            state: disclosure.FilingType
+            state: disclosure.StateDst,
+            type: disclosure.FilingType
         })
     }
     return documents;

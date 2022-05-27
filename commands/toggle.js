@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const ReprModel = require('../database/models/ReprModel');
 
+// rename command to edit-members
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('toggle')
@@ -23,18 +24,23 @@ module.exports = {
         const action = interaction.options.getString('action');
         const last = interaction.options.getString('last');
         const first = interaction.options.getString('first');
+        const guildId = interaction.guildId
+
         await interaction.deferReply();
+        
         
         let member = await ReprModel.findOne({
             last: last,
-            first: first
+            first: first,
+            guildID: guildId
         })
 
         if (action === 'add') {
             if (!member) {
                 member = await ReprModel.create({
                     last: last,
-                    first: first
+                    first: first,
+                    guildID: guildId
                 });
                 await member.save();
                 await interaction.editReply(`Added ${first} ${last} to monitor.`);

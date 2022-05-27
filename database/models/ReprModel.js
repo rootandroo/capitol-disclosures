@@ -10,11 +10,16 @@ const representativeSchema = new Schema({
         type: String,
         required: true
     },
+    guildID: {
+        type: String,
+        required: true
+    }
 });
 
 representativeSchema.index({
     last: 1,
-    first: 1
+    first: 1,
+    guildID: 1
 }, {
     unique: true
 });

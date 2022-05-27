@@ -5,7 +5,6 @@ const disclosureSchema = new Schema({
     docID: {
         type: String,
         required: true,
-        unique: true
     },
     last: {
         type: String,
@@ -15,6 +14,18 @@ const disclosureSchema = new Schema({
         type: String,
         required: true
     },
+    guildID: {
+        type: String,
+        required: true
+    }
 });
+
+disclosureSchema.index({
+    docID: 1,
+    guildID: 1
+}, {
+    unique: true
+});
+
 
 module.exports = model("disclosure", disclosureSchema);
