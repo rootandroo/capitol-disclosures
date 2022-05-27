@@ -29,6 +29,9 @@ module.exports = {
             .setRequired(true)),
 	async execute(interaction) {        
         const guildId = interaction.guildId
+        
+        if (!guildID) return;
+
         if (!monitor[guildId]) {
             const metric = interaction.options.getString('metric')
             const unit = interaction.options.getInteger('interval')
