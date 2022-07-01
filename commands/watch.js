@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const ReprModel = require('../database/models/ReprModel');
 
 // rename command to edit-members
 module.exports = {

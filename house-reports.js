@@ -21,7 +21,6 @@ const parseDisclosures = (disclosures, year) => {
 
     for (let line of lines.slice(1)) {
         const values = line.split('\t');
-        console.log(values)
         const row = values.reduce((row, field, index) => {
             row[header[index]] = field            
             return row;
@@ -79,7 +78,7 @@ if (require.main === module) {
 
     fetchDisclosures(2022).then(disclosures => {
         const reports = parseDisclosures(disclosures, 2022)
-        console.log(reports)
+        console.log(reports[0])
     })
 }
 

@@ -61,7 +61,7 @@ const parseDisclosures = async (session, disclosures) => {
     const table = $(".table-responsive > .table");
     const header = table.find(".header");
     const body = table.find("tbody > tr");
-    const txs = []
+    const txs = [];
     const headers = header
       .text()
       .split("\n")
@@ -77,23 +77,23 @@ const parseDisclosures = async (session, disclosures) => {
 
       row = {};
       headers.forEach((key, i) => (row[key] = values[i]));
-      txs.push(row)
+      txs.push(row);
     });
-    return txs
+    return txs;
   };
-  
-  const result = []
+
+  const result = [];
   for (let disclosure of disclosures) {
-    if (!disclosure.url.includes("paper")) { 
+    if (!disclosure.url.includes("paper")) {
       disclosure.txs = await parseReport(disclosure.url);
     }
-    result.push(disclosure)
+    result.push(disclosure);
   }
-  return result
+  return result;
 };
 
-if (require.main == module) {
-  const session = wrapper(
+const createSession = () => {
+  return wrapper(
     axios.create({
       jar: new CookieJar(),
       headers: {
@@ -103,12 +103,15 @@ if (require.main == module) {
       },
     })
   );
+};
+if (require.main == module) {
+  const session = createSession();
 
   fetchDisclosures(session, 2022).then((disclosures) => {
-    parseDisclosures(session, disclosures).then(result => {
-        console.log(result[0])
+    parseDisclosures(session, disclosures).then((result) => {
+      console.log(result[0]);
     });
   });
 }
 
-module.exports = { fetchDisclosures, parseDisclosures };
+module.exports = { fetchDisclosures, parseDisclosures, createSession };

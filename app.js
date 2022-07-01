@@ -1,6 +1,4 @@
-// const { token } = require('./config.json');
 const { Client, Intents, Collection } = require('discord.js');
-const { connectDatabase } = require('./database/dbConnect')
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -17,24 +15,32 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
 }
 
-client.once('ready', async () => {
-    await connectDatabase();
-    console.log('Ready!');
-});
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand()) return;
-
-    const command = client.commands.get(interaction.commandName);
-
-    if (!command) return;
-
-    try {
-        await command.execute(interaction);
-    } catch (error) {
-        console.error(error);
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+for (const file of eventFiles) {
+    const filePath = path.join(eventsPath, file);
+    const event = require(filePath);
+    if (event.once) {
+        client.once(event.name, async (...args) => event.execute(...args));
+    } else {
+        client.on(event.name, async (...args) => event.execute(...args));
     }
-});
+}
+
+// client.on('interactionCreate', async interaction => {
+//     if (!interaction.isCommand()) return;
+
+//     const command = client.commands.get(interaction.commandName);
+
+//     if (!command) return;
+
+//     try {
+//         await command.execute(interaction);
+//     } catch (error) {
+//         console.error(error);
+//         await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+//     }
+// });
 
 client.login(process.env.TOKEN);
