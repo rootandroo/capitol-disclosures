@@ -106,7 +106,7 @@ if (require.main == module) {
 
   fetchDisclosures(session, 2022).then((disclosures) => {
     parseDisclosures(session, disclosures).then(result => {
-        console.log(result)
+        console.log(result[0])
     });
   });
 }

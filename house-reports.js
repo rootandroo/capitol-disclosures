@@ -73,8 +73,13 @@ const fetchCongressMembers = async year => {
 }
 
 if (require.main === module) {
-    fetchCongressMembers(2022).then(member => {  
-        console.log('Complete')
+    // fetchCongressMembers(2022).then(members => {  
+    //     console.log(members)
+    // })
+
+    fetchDisclosures(2022).then(disclosures => {
+        const reports = parseDisclosures(disclosures, 2022)
+        console.log(reports)
     })
 }
 
