@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { fetchDisclosures, parseDisclosures, fetchDocuments } = require('../house-reports')
+const house = require('../house-reports')
 const ReprModel = require('../database/models/ReprModel');
 const DiscModel = require('../database/models/DiscModel');
 const { MessageEmbed } = require('discord.js');
