@@ -14,13 +14,11 @@ const reportSchema = new Schema({
         required: true,
         unique: true
     },
-    servers: {
-        type: [Number]
-    },
     member: {
         type: Schema.Types.ObjectId,
         ref: 'member'
     },
+    servers: [Number],
     transactions: [{
         type: Schema.Types.ObjectId,
         ref: 'transaction'

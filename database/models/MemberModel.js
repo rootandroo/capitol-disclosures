@@ -27,7 +27,6 @@ const memberSchema = new Schema({
     reports: [{
         type: Schema.Types.ObjectId,
         ref: 'report',
-        unique: true
     }],
     transactions: [{
         type: Schema.Types.ObjectId,
