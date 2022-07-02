@@ -2,7 +2,7 @@ const { model, Schema } = require("mongoose");
 
 
 const memberSchema = new Schema({
-    chamber: {
+    position: {
         type: String,
         required: true
     }, 

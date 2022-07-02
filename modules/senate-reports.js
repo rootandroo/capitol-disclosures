@@ -1,6 +1,6 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
-const { CookieJar, parse } = require("tough-cookie");
+const { CookieJar } = require("tough-cookie");
 const { wrapper } = require("axios-cookiejar-support");
 
 const ROOT = "https://efdsearch.senate.gov";
@@ -25,26 +25,6 @@ const _csrf = async (session) => {
   return csrf;
 };
 
-const parseName = (first, last) => {
-  first = first.trim();
-  if (first.toUpperCase() === first) {
-    first = first.charAt(0) + first.slice(1).toLowerCase();
-  }
-
-  if (/\s/.test(first) && !first.includes(".")) {
-    match = first.match(/^([a-zA-Z']+) [A-Z]/);
-    first = match ? match[0] + "." : null;
-  }
-  last = last.trim();
-  if (last.toUpperCase() === last) {
-    last = last.charAt(0) + last.slice(1).toLowerCase();
-  }
-  if (last.includes(",")) {
-    last = last.split(',')[0];
-  }
-  return [first, last];
-};
-
 const fetchDisclosures = async (session, year) => {
   const params = new URLSearchParams({
     draw: 1,
@@ -59,13 +39,10 @@ const fetchDisclosures = async (session, year) => {
     const reports = resp.data.data;
     reports.forEach(async (report) => {
       [first, last, office, anchor, date] = report;
-      [first, last] = parseName(first, last);
       var url = `${ROOT}${anchor.match(hrefRegex)[0]}`;
       var type = anchor.match(hrefTextRegex)[0].trim();
       var entry = { first, last, office, url, type, date };
-      if (entry.first) {
-        disclosures.push(entry);
-      }
+      disclosures.push(entry);
     });
   };
 
