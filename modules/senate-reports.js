@@ -56,9 +56,8 @@ const fetchDisclosures = async (session, year) => {
       var url = `${ROOT}${anchor.match(hrefRegex)[0]}`;
       var type = anchor.match(hrefTextRegex)[0].trim();
       var entry = { first, last, office, url, type, date };
-      if (entry.first) {
-        disclosures.push(entry);
-      }
+
+      disclosures.push(entry);
     });
   };
 
@@ -76,9 +75,7 @@ const fetchDisclosures = async (session, year) => {
 };
 
 const fetchTransactions = async (session, url) => {
-  if (url.includes("paper")) {
-    return;
-  }
+  if (url.includes("paper")) { return }
   var resp = await session.get(url);
   // CSRF token expired, renew token and session
   if (resp.request.res.responseUrl == LANDING_PAGE_URL) {
