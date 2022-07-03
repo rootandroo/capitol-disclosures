@@ -25,6 +25,19 @@ const _csrf = async (session) => {
   return csrf;
 };
 
+const parseName = (first, last) => {
+  first =
+    first.toUpperCase() === first
+      ? first.charAt(0) + first.slice(1).toLowerCase().trim()
+      : first.trim();
+  last =
+    last.toUpperCase() === last
+      ? last.charAt(0) + last.slice(1).toLowerCase()
+      : last.trim();
+  last = last.includes(",") ? last.split(",")[0] : last;
+  return [first, last];
+};
+
 const fetchDisclosures = async (session, year) => {
   const params = new URLSearchParams({
     draw: 1,
@@ -39,10 +52,13 @@ const fetchDisclosures = async (session, year) => {
     const reports = resp.data.data;
     reports.forEach(async (report) => {
       [first, last, office, anchor, date] = report;
+      [first, last] = parseName(first, last);
       var url = `${ROOT}${anchor.match(hrefRegex)[0]}`;
       var type = anchor.match(hrefTextRegex)[0].trim();
       var entry = { first, last, office, url, type, date };
-      disclosures.push(entry);
+      if (entry.first) {
+        disclosures.push(entry);
+      }
     });
   };
 
@@ -59,47 +75,39 @@ const fetchDisclosures = async (session, year) => {
   return disclosures;
 };
 
-const fetchTransactions = async (session, disclosures) => {
-  const parseReport = async (url) => {
-    var resp = await session.get(url);
-    // CSRF token expired, renew token and session
-    if (resp.request.res.responseUrl == LANDING_PAGE_URL) {
-      await _csrf(session);
-      resp = await session.get(url);
-    }
-    const $ = cheerio.load(resp.data);
-    const table = $(".table-responsive > .table");
-    const header = table.find(".header");
-    const body = table.find("tbody > tr");
-    const txs = [];
-    const headers = header
+const fetchTransactions = async (session, url) => {
+  if (url.includes("paper")) {
+    return;
+  }
+  var resp = await session.get(url);
+  // CSRF token expired, renew token and session
+  if (resp.request.res.responseUrl == LANDING_PAGE_URL) {
+    await _csrf(session);
+    resp = await session.get(url);
+  }
+  const $ = cheerio.load(resp.data);
+  const table = $(".table-responsive > .table");
+  const header = table.find(".header");
+  const body = table.find("tbody > tr");
+  const txs = [];
+  const headers = header
+    .text()
+    .split("\n")
+    .filter((col) => /[a-zA-Z]/.test(col))
+    .map((col) => col.trim());
+  body.each((_, row) => {
+    values = $(row)
       .text()
       .split("\n")
-      .filter((col) => /[a-zA-Z]/.test(col))
-      .map((col) => col.trim());
-    body.each((_, row) => {
-      values = $(row)
-        .text()
-        .split("\n")
-        .filter((col) => /[a-zA-Z0-9]/.test(col))
-        .map((col) => col.trim())
-        .slice(1);
-      row = {};
-      headers.forEach((key, i) => (row[key] = values[i]));
-      row.Comment = row.Comment || "";
-      txs.push(row);
-    });
-    return txs;
-  };
-
-  const result = [];
-  for (let disclosure of disclosures) {
-    if (!disclosure.url.includes("paper")) {
-      disclosure.txs = await parseReport(disclosure.url);
-    }
-    result.push(disclosure);
-  }
-  return result;
+      .filter((col) => /[a-zA-Z0-9]/.test(col))
+      .map((col) => col.trim())
+      .slice(1);
+    row = {};
+    headers.forEach((key, i) => (row[key] = values[i]));
+    row.Comment = row.Comment || "";
+    txs.push(row);
+  });
+  return txs;
 };
 
 const createSession = () => {
@@ -118,7 +126,9 @@ if (require.main == module) {
   const session = createSession();
 
   fetchDisclosures(session, 2022).then((disclosures) => {
-    fetchTransactions(session, disclosures).then((result) => {});
+    fetchTransactions(session, disclosures[0].url).then((result) => {
+      console.log(result[0]);
+    });
   });
 }
 

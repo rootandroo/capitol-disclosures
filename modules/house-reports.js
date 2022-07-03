@@ -1,6 +1,5 @@
 const axios = require("axios");
 const admZip = require("adm-zip");
-const cheerio = require("cheerio");
 
 const fetchDisclosures = async (year) => {
   const url = `https://disclosures-clerk.house.gov/public_disc/financial-pdfs/${year}FD.ZIP`;
@@ -27,6 +26,7 @@ const parseDisclosures = (disclosures, year) => {
     }, {});
     if (row?.DocID) {
       const reportType = row.FilingType == "P" ? "ptr-pdfs" : "financial-pdfs";
+      if (row.FilingType == "C") { continue }
       row.URL = `https://disclosures-clerk.house.gov/public_disc/${reportType}/${year}/${row.DocID}.pdf`;
       result.push(row);
     }
@@ -39,6 +39,7 @@ if (require.main === module) {
   console.log("DISCLOSURES");
   fetchDisclosures(2022).then((disclosures) => {
     const reports = parseDisclosures(disclosures, 2022);
+    console.log(reports)
   });
 }
 

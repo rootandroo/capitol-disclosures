@@ -19,13 +19,4 @@ const txSchema = new Schema({
   },
 });
 
-txSchema.index(
-  {
-    date: 1,
-    type: 1,
-    ticker: 1,
-  },
-  { unique: true }
-);
-
 module.exports = model("transaction", txSchema);

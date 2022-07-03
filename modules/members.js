@@ -15,44 +15,44 @@ const fetchCongressMembers = async (year) => {
   };
   headers = { "Content-Type": "application/json" };
   let resp = await axios.post(url, params, { headers: headers });
-  const hitsTotal = resp.data.hitsTotal
-  const pages = Math.ceil(hitsTotal / 96)
-  let hits = []
+  const hitsTotal = resp.data.hitsTotal;
+  const pages = Math.ceil(hitsTotal / 96);
+  let hits = [];
   for (page = 1; page <= pages; page++) {
-    hits = [...hits, ...resp.data.filteredHits]
-    params.from = page * 96
+    hits = [...hits, ...resp.data.filteredHits];
+    params.from = page * 96;
     resp = await axios.post(url, params, { headers: headers });
   }
-  return hits
+  return hits;
 };
 
-const parseMembers = members => {
-  result = []
-  members.forEach(member => {
-    const congress = member.congresses[member.congresses.length - 1]
-    let first = member.unaccentedGivenName
-    const middle = member.unaccentedMiddleName
-    const last = member.unaccentedFamilyName
-    first = middle ? `${first} ${middle}` : first
-
-    const district = congress.stateDistrict ? congress.stateDistrict : ''
+const parseMembers = (members) => {
+  result = [];
+  members.forEach((member) => {
+    const congress = member.congresses[member.congresses.length - 1];
+    let first = member.unaccentedGivenName;
+    const middle = member.unaccentedMiddleName;
+    let last = member.unaccentedFamilyName;
     entry = {
       position: congress.position,
-      last: member.unaccentedFamilyName,
-      first: first,
+      last:
+        last.toUpperCase() === last
+          ? last.charAt(0) + last.slice(1).toLowerCase().trim()
+          : last.trim(),
+      first: middle ? `${first} ${middle}` : first,
       state: congress.stateCode,
-      district: district,
-      party: congress.parties[0]
-    }
-    result.push(entry)
-  })
-  return result
-}
+      district: congress.stateDistrict ? congress.stateDistrict : "",
+      party: congress.parties[0],
+    };
+    result.push(entry);
+  });
+  return result;
+};
 
 if (require.main === module) {
-  fetchCongressMembers(2022).then(members => {
-    console.log(parseMembers(members))
+  fetchCongressMembers(2022).then((members) => {
+    console.log(parseMembers(members));
   });
 }
 
-module.exports = { fetchCongressMembers };
+module.exports = { fetchCongressMembers, parseMembers };

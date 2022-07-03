@@ -23,6 +23,9 @@ const memberSchema = new Schema({
     party: {
         type: String
     },
+    alias: {
+        type: String
+    },
     servers: [Number],
     reports: [{
         type: Schema.Types.ObjectId,
@@ -31,7 +34,7 @@ const memberSchema = new Schema({
     transactions: [{
         type: Schema.Types.ObjectId,
         ref: 'transaction'
-    }]
+    }],
 });
 
 memberSchema.index({
