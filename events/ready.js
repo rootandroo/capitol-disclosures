@@ -37,7 +37,7 @@ const updateSenateReports = async (year) => {
 
     let transactions = await senate.fetchTransactions(session, item.url);
     if (!transactions) continue;
-    await txController.bulkSave(transactions, report, member);
+    await txController.bulkSaveUnique(transactions, report, member);
   }
 };
 
@@ -46,9 +46,9 @@ module.exports = {
   once: true,
   async execute(client) {
     await connectDatabase();
-    await updateMembers(2022);
-    await updateHouseReports(2022);
-    await updateSenateReports(2022);
+    // await updateMembers(2022);
+    // await updateHouseReports(2022);
+    // await updateSenateReports(2022);
 
     // Set interval to 24 hours in milliseconds
     const interval = 60 * 1000;

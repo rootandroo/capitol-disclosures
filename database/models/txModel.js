@@ -21,7 +21,11 @@ const txSchema = new Schema({
 });
 
 txSchema.index({
-  "$**" : 1
+  id : 1,
+  date: 1,
+  ticker: 1,
+  type: 1,
+  owner: 1
 }, {
   unique: true
 });

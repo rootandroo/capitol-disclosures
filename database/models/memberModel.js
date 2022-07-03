@@ -38,11 +38,15 @@ const memberSchema = new Schema({
 });
 
 memberSchema.index({
-    last: 'text',
-    first: 'text'
+    last: 1,
+    first: 1
 }, {
     unique: true
 });
 
+memberSchema.index({
+    last: 'text',
+    first: 'text'
+})
 
 module.exports = model("member", memberSchema);
