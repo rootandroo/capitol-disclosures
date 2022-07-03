@@ -4,7 +4,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('watch')
-		.setDescription('Add or remove the names of Rep. to be monitored.')
+		.setDescription('Add or remove the names of congress members to be monitored.')
         .addStringOption(option => 
             option.setName('action')
             .setDescription('Select action.')
@@ -13,11 +13,11 @@ module.exports = {
             .addChoices({ name: 'Remove', value: 'remove' }))
         .addStringOption(option => 
             option.setName('last')
-            .setDescription("Enter the Rep.'s last name. (e.g. Doe)")
+            .setDescription("Enter a member's last name. (e.g. Doe)")
             .setRequired(true))
         .addStringOption(option => 
             option.setName('first')
-            .setDescription("Enter the Rep.'s first name. (e.g. John) ")
+            .setDescription("Enter a member's first name. (e.g. John) ")
             .setRequired(true)),
 	async execute(interaction) {
         const action = interaction.options.getString('action');
@@ -28,7 +28,6 @@ module.exports = {
         if (!guildId) return;
         
         await interaction.deferReply();
-        
         
         let member = await ReprModel.findOne({
             last: last,

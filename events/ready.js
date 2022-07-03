@@ -19,23 +19,24 @@ const updateHouseReports = async (year) => {
   const houseReports = house.parseDisclosures(houseDisclosures, year);
   for (const item of houseReports) {
     let member = await memberController.findByNameOrAlias(item.last, item.first);
-    if (!member) { continue }
+    if (!member) continue;
     let report = await reportController.saveUniqueReport(item, member);
   }
 };
+
 const updateSenateReports = async (year) => {
   console.log("Updating Senate Reports");
   const session = senate.createSession();
   const senateDisclosures = await senate.fetchDisclosures(session, year);
   for (const item of senateDisclosures) {
     let member = await memberController.findByNameOrAlias(item.last, item.first);
-    if (!member) { continue }
+    if (!member) continue;
 
     let report = await reportController.saveUniqueReport(item, member);
-    if (!report) { continue }
+    if (!report) continue;
 
     let transactions = await senate.fetchTransactions(session, item.url);
-    if (!transactions) { continue }
+    if (!transactions) continue;
     await txController.bulkSave(transactions, report, member);
   }
 };

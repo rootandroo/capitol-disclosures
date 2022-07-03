@@ -2,7 +2,7 @@ const memberModel = require("../models/memberModel");
 
 const bulkSaveUnique = async (members) => {
   for (const item of members) {
-    if (!item.last || !item.first) { continue }
+    if (!item.last || !item.first) continue;
     const query = await memberModel.findOne({ last: item.last, first: item.first});
     if (!query) {
       console.log(`    Adding [${item.first} ${item.last}] to database.`);
@@ -26,11 +26,11 @@ const findByNameOrAlias = async (last, first) => {
   let member = await memberModel.findOne({
     $or: [
       {
-        last: { $regex: last },
-        first: { $regex: first },
+        last: { $regex: last, $options: 'i' },
+        first: { $regex: first, $options: 'i' },
       },
       {
-        last: { $regex: last },
+        last: { $regex: last, $options: 'i' },
         alias: first,
       },
     ],

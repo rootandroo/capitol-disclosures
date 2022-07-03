@@ -75,7 +75,7 @@ const fetchDisclosures = async (session, year) => {
 };
 
 const fetchTransactions = async (session, url) => {
-  if (url.includes("paper")) { return }
+  if (url.includes("paper")) return;
   var resp = await session.get(url);
   // CSRF token expired, renew token and session
   if (resp.request.res.responseUrl == LANDING_PAGE_URL) {

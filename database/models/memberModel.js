@@ -38,8 +38,8 @@ const memberSchema = new Schema({
 });
 
 memberSchema.index({
-    last: 1,
-    first: 1
+    last: 'text',
+    first: 'text'
 }, {
     unique: true
 });
