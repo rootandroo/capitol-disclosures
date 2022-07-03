@@ -24,22 +24,23 @@ const parseDisclosures = (disclosures, year) => {
       row[header[index]] = field;
       return row;
     }, {});
-    if (row?.DocID) {
+    if (row?.DocID && row.FilingType !== "C") {
       const reportType = row.FilingType == "P" ? "ptr-pdfs" : "financial-pdfs";
-      if (row.FilingType == "C") { continue }
       row.URL = `https://disclosures-clerk.house.gov/public_disc/${reportType}/${year}/${row.DocID}.pdf`;
+      row.First = /"/.test(item.First)
+        ? item.First.match(/"(.*?)"/)[0].replaceAll('"', "")
+        : item.First;
       result.push(row);
     }
   }
   return result;
 };
 
-
 if (require.main === module) {
   console.log("DISCLOSURES");
   fetchDisclosures(2022).then((disclosures) => {
     const reports = parseDisclosures(disclosures, 2022);
-    console.log(reports)
+    console.log(reports);
   });
 }
 
