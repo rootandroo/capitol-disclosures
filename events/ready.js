@@ -18,7 +18,10 @@ const updateHouseReports = async (year) => {
   const houseDisclosures = await house.fetchDisclosures(year);
   const houseReports = house.parseDisclosures(houseDisclosures, year);
   for (const item of houseReports) {
-    let member = await memberController.findByNameOrAlias(item.last, item.first);
+    let member = await memberController.findByNameOrAlias(
+      item.last,
+      item.first
+    );
     if (!member) continue;
     let report = await reportController.saveUniqueReport(item, member);
   }
@@ -29,7 +32,10 @@ const updateSenateReports = async (year) => {
   const session = senate.createSession();
   const senateDisclosures = await senate.fetchDisclosures(session, year);
   for (const item of senateDisclosures) {
-    let member = await memberController.findByNameOrAlias(item.last, item.first);
+    let member = await memberController.findByNameOrAlias(
+      item.last,
+      item.first
+    );
     if (!member) continue;
 
     let report = await reportController.saveUniqueReport(item, member);
@@ -46,10 +52,7 @@ module.exports = {
   once: true,
   async execute(client) {
     await connectDatabase();
-    // await updateMembers(2022);
-    // await updateHouseReports(2022);
-    // await updateSenateReports(2022);
-
+    
     // Set interval to 24 hours in milliseconds
     const interval = 60 * 1000;
     const monitor = setInterval(async () => {

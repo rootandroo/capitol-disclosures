@@ -38,8 +38,14 @@ const findByNameOrAlias = async (last, first) => {
   return member;
 };
 
-const search = async (last, first) => {
-  const member = await memberModel.find({});
+const searchByName = async (name) => {
+  const members = await memberModel.find({$text: {$search: name}})
+    .limit(5);
+  return members
 };
 
-module.exports = { bulkSaveUnique, findByNameOrAlias };
+const findById = async (id) => {
+  return await memberModel.findById(id)
+}
+
+module.exports = { bulkSaveUnique, findByNameOrAlias, searchByName, findById };
