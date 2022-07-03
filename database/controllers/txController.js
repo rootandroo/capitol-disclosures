@@ -1,9 +1,9 @@
 const txModel = require("../models/txModel")
 
 const bulkSave = async (transactions, report, member) => {
-    for (tx of transactions) {
-        console.log(`    Saving tx with ticker [${tx.Ticker}]`);
-        transaction = await txModel.create({
+    for (const tx of transactions) {
+        console.log(`        Saving tx with ticker [${tx.Ticker}]`);
+        const transaction = await txModel.create({
           id: tx.ID,
           date: new Date(tx["Transaction Date"]),
           owner: tx.Owner,

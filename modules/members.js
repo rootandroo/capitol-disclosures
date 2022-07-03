@@ -12,6 +12,12 @@ const fetchCongressMembers = async (year) => {
     },
     from: 0,
     applicationName: "bioguide.house.gov",
+    sort: [
+      { _score: true },
+      { field: "unaccentedFamilyName", order: "asc" },
+      { field: "unaccentedGivenName", order: "asc" },
+      { field: "unaccentedMiddleName", order: "asc" },
+    ],
   };
   headers = { "Content-Type": "application/json" };
   let resp = await axios.post(url, params, { headers: headers });
@@ -51,7 +57,8 @@ const parseMembers = (members) => {
 
 if (require.main === module) {
   fetchCongressMembers(2022).then((members) => {
-    console.log(parseMembers(members));
+    parsedMembers = parseMembers(members)
+    console.log([...new Set(parsedMembers.map(m => m.first + ' ' + m.last))].length);
   });
 }
 

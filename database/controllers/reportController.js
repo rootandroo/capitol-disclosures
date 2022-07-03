@@ -1,10 +1,10 @@
 const reportModel = require("../models/reportModel");
 
 const saveUniqueReport = async (item, member) => {
-    let reportDoc = await reportModel.findOne({ url: item.url });
-    if (!reportDoc) {
-      console.log(`Adding Report for [${item.first} ${item.last}] to database.`);
-      reportDoc = await reportModel.create({
+    const query = await reportModel.findOne({ url: item.url });
+    if (!query) {
+      console.log(`    Adding Report for [${item.first} ${item.last}] to database.`);
+      const report = await reportModel.create({
         type: item.type,
         date: new Date(item.date),
         url: item.url,
@@ -12,9 +12,10 @@ const saveUniqueReport = async (item, member) => {
         servers: [],
         transactions: [],
       });
-      await reportDoc.save();
+      await report.save();
+      return report
     }
-    return reportDoc
+    return query
 }
 
 

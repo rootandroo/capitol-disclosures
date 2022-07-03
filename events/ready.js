@@ -17,7 +17,7 @@ const updateHouseReports = async (year) => {
   console.log("Updating House Reports");
   const houseDisclosures = await house.fetchDisclosures(year);
   const houseReports = house.parseDisclosures(houseDisclosures, year);
-  for (item of houseReports) {
+  for (const item of houseReports) {
     let member = await memberController.findByNameOrAlias(item.last, item.first);
     if (!member) { continue }
     let report = await reportController.saveUniqueReport(item, member);
@@ -27,7 +27,7 @@ const updateSenateReports = async (year) => {
   console.log("Updating Senate Reports");
   const session = senate.createSession();
   const senateDisclosures = await senate.fetchDisclosures(session, year);
-  for (item of senateDisclosures) {
+  for (const item of senateDisclosures) {
     let member = await memberController.findByNameOrAlias(item.last, item.first);
     if (!member) { continue }
 
