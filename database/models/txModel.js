@@ -1,6 +1,7 @@
 const { model, Schema } = require("mongoose");
 
 const txSchema = new Schema({
+  id: { type: Number },
   date: { type: Date },
   owner: { type: String },
   ticker: { type: String },
@@ -17,6 +18,12 @@ const txSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "member",
   },
+});
+
+txSchema.index({
+  "$**" : 1
+}, {
+  unique: true
 });
 
 module.exports = model("transaction", txSchema);

@@ -1,20 +1,20 @@
-const reportModel = require("../database/models/reportModel");
+const reportModel = require("../models/reportModel");
 
-const saveUniqueReport = (report, member) => {
-    let report = await reportModel.findOne({ url: report.URL });
-    if (!report) {
-      console.log(`Adding Report for [${report.First} ${report.Last}] to database.`);
-      report = await reportModel.create({
-        type: report.FilingType,
-        date: new Date(report.FilingDate),
-        url: report.URL,
+const saveUniqueReport = async (item, member) => {
+    let reportDoc = await reportModel.findOne({ url: item.url });
+    if (!reportDoc) {
+      console.log(`Adding Report for [${item.first} ${item.last}] to database.`);
+      reportDoc = await reportModel.create({
+        type: item.type,
+        date: new Date(item.date),
+        url: item.url,
         member: member._id,
         servers: [],
         transactions: [],
       });
-      await report.save();
+      await reportDoc.save();
     }
-    return report
+    return reportDoc
 }
 
 

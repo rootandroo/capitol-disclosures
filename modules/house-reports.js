@@ -20,17 +20,14 @@ const parseDisclosures = (disclosures, year) => {
 
   for (let line of lines.slice(1)) {
     const values = line.split("\t");
-    const row = values.reduce((row, field, index) => {
-      row[header[index]] = field;
-      return row;
-    }, {});
-    if (row?.DocID && row.FilingType !== "C") {
-      const reportType = row.FilingType == "P" ? "ptr-pdfs" : "financial-pdfs";
-      row.URL = `https://disclosures-clerk.house.gov/public_disc/${reportType}/${year}/${row.DocID}.pdf`;
-      row.First = /"/.test(item.First)
-        ? item.First.match(/"(.*?)"/)[0].replaceAll('"', "")
-        : item.First;
-      result.push(row);
+    let [ prefix, last, first, suffix, type, state, year, date, doc ] = values
+    if (doc && type !== "C") {
+      const reportType = type == "P" ? "ptr-pdfs" : "financial-pdfs";
+      url = `https://disclosures-clerk.house.gov/public_disc/${reportType}/${year}/${doc}.pdf`;
+      first = /"/.test(first)
+        ? first.match(/"(.*?)"/)[0].replaceAll('"', "")
+        : first;
+      result.push({url, first, last, type, date});
     }
   }
   return result;

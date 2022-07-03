@@ -1,7 +1,11 @@
-const memberModel = require("../database/models/memberModel");
+const memberModel = require("../models/memberModel");
 
 const bulkSaveUnique = async members => {
     for (item of members) {
+        if (!item.last || !item.first) {
+          console.log(item)
+          continue
+        }
         let query = await memberModel.findOne({
           last: item.last,
           first: item.first,

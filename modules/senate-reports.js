@@ -90,18 +90,20 @@ const fetchTransactions = async (session, url) => {
   const header = table.find(".header");
   const body = table.find("tbody > tr");
   const txs = [];
-  const headers = header
-    .text()
-    .split("\n")
-    .filter((col) => /[a-zA-Z]/.test(col))
-    .map((col) => col.trim());
+  const headers = [
+    'ID',
+    ...header
+      .text()
+      .split("\n")
+      .filter((col) => /[a-zA-Z]/.test(col))
+      .map((col) => col.trim()),
+  ];
   body.each((_, row) => {
     values = $(row)
       .text()
       .split("\n")
       .filter((col) => /[a-zA-Z0-9]/.test(col))
-      .map((col) => col.trim())
-      .slice(1);
+      .map((col) => col.trim());
     row = {};
     headers.forEach((key, i) => (row[key] = values[i]));
     row.Comment = row.Comment || "";
@@ -126,6 +128,7 @@ if (require.main == module) {
   const session = createSession();
 
   fetchDisclosures(session, 2022).then((disclosures) => {
+    console.log(disclosures[0])
     fetchTransactions(session, disclosures[0].url).then((result) => {
       console.log(result[0]);
     });
