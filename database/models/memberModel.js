@@ -27,14 +27,6 @@ const memberSchema = new Schema({
         type: String
     },
     servers: [Number],
-    reports: [{
-        type: Schema.Types.ObjectId,
-        ref: 'report',
-    }],
-    transactions: [{
-        type: Schema.Types.ObjectId,
-        ref: 'transaction'
-    }],
 });
 
 memberSchema.index({

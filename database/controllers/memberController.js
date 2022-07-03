@@ -14,9 +14,6 @@ const bulkSaveUnique = async (members) => {
       state: item.state,
       district: item.district,
       party: item.party,
-      servers: [],
-      reports: [],
-      transactions: [],
     });
     await member.save();
   }
@@ -38,6 +35,10 @@ const findByNameOrAlias = async (last, first) => {
   return member;
 };
 
+const findMonitored = async () => {
+  return await memberModel.find({ servers: { $exists: true, $ne: [] } })
+}
+
 const searchByName = async (name) => {
   const members = await memberModel.find({$text: {$search: name}})
     .limit(5);
@@ -48,4 +49,4 @@ const findById = async (id) => {
   return await memberModel.findById(id)
 }
 
-module.exports = { bulkSaveUnique, findByNameOrAlias, searchByName, findById };
+module.exports = { bulkSaveUnique, findByNameOrAlias, searchByName, findById, findMonitored };

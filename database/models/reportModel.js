@@ -19,10 +19,6 @@ const reportSchema = new Schema({
         ref: 'member'
     },
     servers: [Number],
-    transactions: [{
-        type: Schema.Types.ObjectId,
-        ref: 'transaction'
-    }]
 });
 
 module.exports = model("report", reportSchema);

@@ -11,7 +11,6 @@ const saveUniqueReport = async (item, member) => {
     url: item.url,
     member: member._id,
     servers: [],
-    transactions: [],
   });
   await report.save();
   return report;
