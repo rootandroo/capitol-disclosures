@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const memberController = require("../database/controllers/memberController");
+const { isValidObjectId } = require('mongoose');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -24,39 +25,44 @@ module.exports = {
     ),
   async execute(interaction) {
     const action = interaction.options.getString("action");
-    const last = interaction.options.getString("last");
-    const first = interaction.options.getString("first");
-    const guildId = interaction.guildId;
+    const channel = `${interaction.channelId}`;
 
     await interaction.deferReply();
 
     const choice = interaction.options.getString("name");
+    if (!isValidObjectId(choice)) return;
 
     const member = await memberController.findById(choice);
 
-    if (!member) await interaction.editReply(`Invalid member.`);
+    if (!member) {
+      await interaction.editReply(`Invalid member.`);
+      return;
+    }
 
-    const name = `${member.position.substring(0, 3)}. ${member.first}, ${member.last}`
+    const name = `${member.position.substring(0, 3)}. ${member.first}, ${
+      member.last
+    }`;
+    
     if (action === "add") {
       // Check if this server is monitoring this member
-      if (member.servers.includes(guildId)) {
+      if (member.servers.includes(channel)) {
         await interaction.editReply(`${name} already in monitor.`);
         return;
       }
-      
+
       // Add server to member's monitor
-      member.servers.push(guildId);
+      member.servers.push(channel);
       await member.save();
       await interaction.editReply(`Added ${name} to monitor.`);
     }
 
     if (action === "remove") {
-      if (!member.servers.includes(guildId)) {
+      if (!member.servers.includes(channel)) {
         await interaction.editReply(`${name} not in monitor.`);
         return;
       }
 
-      const index = member.servers.indexOf(guildId);
+      const index = member.servers.indexOf(channel);
       member.servers.splice(index, 1);
       await interaction.editReply(`${name} removed from monitor.`);
     }

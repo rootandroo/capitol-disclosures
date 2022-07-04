@@ -5,6 +5,8 @@ const saveUniqueReport = async (item, member) => {
   if (query) return query;
   
   console.log(`    Adding Report for [${item.first} ${item.last}] to database.`);
+  if (!item.date) return
+
   const report = await reportModel.create({
     type: item.type,
     date: new Date(item.date),
@@ -16,4 +18,7 @@ const saveUniqueReport = async (item, member) => {
   return report;
 };
 
-module.exports = { saveUniqueReport };
+const findByMember = async member => {
+  return await reportModel.find({member: member._id})
+}
+module.exports = { saveUniqueReport, findByMember };

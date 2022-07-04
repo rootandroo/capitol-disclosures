@@ -7,7 +7,6 @@ const reportSchema = new Schema({
     },
     date: {
         type: Date,
-        required: true
     },
     url: {
         type: String,
@@ -18,7 +17,7 @@ const reportSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'member'
     },
-    servers: [Number],
+    servers: [String],
 });
 
 module.exports = model("report", reportSchema);

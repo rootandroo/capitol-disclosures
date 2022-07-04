@@ -29,4 +29,8 @@ const bulkSaveUnique = async (transactions, report, member) => {
   }
 };
 
-module.exports = { bulkSaveUnique };
+const findByReport = async report => {
+  return await txModel.find({report: report._id})
+}
+
+module.exports = { bulkSaveUnique, findByReport };

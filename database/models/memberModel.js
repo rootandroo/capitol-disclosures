@@ -26,7 +26,7 @@ const memberSchema = new Schema({
     alias: {
         type: String
     },
-    servers: [Number],
+    servers: [String],
 });
 
 memberSchema.index({

@@ -21,7 +21,6 @@ module.exports = {
 
     if (interaction.isAutocomplete()) {
       if (!interaction.commandName === "watch") return;
-
       const guildId = interaction.guildId;
       if (!guildId) return;
 

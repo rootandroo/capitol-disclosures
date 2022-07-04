@@ -25,7 +25,8 @@ txSchema.index({
   date: 1,
   ticker: 1,
   type: 1,
-  owner: 1
+  owner: 1,
+  member: 1
 }, {
   unique: true
 });
