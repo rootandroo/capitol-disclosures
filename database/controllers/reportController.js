@@ -18,7 +18,7 @@ const saveUniqueReport = async (item, member) => {
   return report;
 };
 
-const findByMember = async member => {
-  return await reportModel.find({member: member._id})
+const findByMemberID = async id => {
+  return await reportModel.find({member: id})
 }
-module.exports = { saveUniqueReport, findByMember };
+module.exports = { saveUniqueReport, findByMemberID };

@@ -39,9 +39,8 @@ module.exports = {
       return;
     }
 
-    const name = `${member.position.substring(0, 3)}. ${member.first}, ${
-      member.last
-    }`;
+    const prefix = `${member.position.substring(0, 3)}.`
+    const name = `${prefix} ${member.last}, ${member.first}`
     
     if (action === "add") {
       // Check if this server is monitoring this member

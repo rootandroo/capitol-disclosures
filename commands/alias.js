@@ -4,7 +4,7 @@ const { isValidObjectId } = require('mongoose')
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("alias")
-    .setDescription("Set aliases for congress members.")
+    .setDescription("Set aliases for congress members. (ADMIN ONLY)")
     .addStringOption((option) =>
       option
         .setName("name")
@@ -29,9 +29,9 @@ module.exports = {
 
     if (!member) await interaction.editReply(`Invalid member.`);
 
-    const name = `${member.position.substring(0, 3)}. ${member.first}, ${
-      member.last
-    }`;
+    const prefix = `${member.position.substring(0, 3)}.`
+    const name = `${prefix} ${member.last}, ${member.first}`
+
 
     member.alias = alias;
     await member.save();
