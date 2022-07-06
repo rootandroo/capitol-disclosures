@@ -34,7 +34,7 @@ module.exports = {
     const reports = await reportController.findByMemberID(member._id);
 
     // Send reports pulled on command
-    await interaction.editReply(`Pulling reports for ${name}.`);
+    await interaction.editReply(`Found ${reports.length} reports for ${name}.`);
     reports.forEach(async (report) => {
       const reportEmbeds = await createReportEmbeds({ report, name });
       await sendReportEmbeds({embeds: reportEmbeds, interaction });
