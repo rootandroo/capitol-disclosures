@@ -27,13 +27,13 @@ module.exports = {
         await updateMembers(year);
       }
       
-      // // Fetch House Reports
-      // await updateHouseReports(year);
+      // Fetch House Reports
+      await updateHouseReports(year);
 
-      // // Fetch Senate Reports
-      // await updateSenateReports(year);
+      // Fetch Senate Reports
+      await updateSenateReports(year);
       
-      // // Look for Reports to Send
+      // Look for Reports to Send
       const reportsToSend = await getReportsToSendAndMarkAsSent();
       
       //Send Reports
