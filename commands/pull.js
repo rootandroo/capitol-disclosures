@@ -8,6 +8,12 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("pull")
     .setDescription("Pull reports from database on demand.")
+    .addIntegerOption((option) =>
+      option
+        .setName("year")
+        .setDescription("Enter a year to pull reports from.")
+        .setRequired(true)
+    )
     .addStringOption((option) =>
       option
         .setName("name")
@@ -17,8 +23,7 @@ module.exports = {
     ),
   async execute(interaction) {
     await interaction.deferReply();
-    const channel = `${interaction.channelId}`;
-
+    const year = interaction.options.getInteger("year");
     const choice = interaction.options.getString("name");
     if (!isValidObjectId(choice)) return;
 
@@ -28,16 +33,21 @@ module.exports = {
       return;
     }
 
-    const prefix = `${member.position.substring(0, 3)}.`
-    const name = `${prefix} ${member.last}, ${member.first}`
+    const prefix = `${member.position.substring(0, 3)}.`;
+    const name = `${prefix} ${member.last}, ${member.first}`;
 
-    const reports = await reportController.findByMemberID(member._id);
+    let reports = await reportController.findByMemberID(member._id);
+    reports = reports.filter(
+      (report) =>
+        report.date.getTime() >= new Date(year, 1, 1).getTime() &&
+        report.date.getTime() <= new Date(year + 1, 1, 1).getTime()
+    );
 
     // Send reports pulled on command
     await interaction.editReply(`Found ${reports.length} reports for ${name}.`);
     reports.forEach(async (report) => {
       const reportEmbeds = await createReportEmbeds({ report, name });
-      await sendReportEmbeds({embeds: reportEmbeds, interaction });
+      await sendReportEmbeds({ embeds: reportEmbeds, interaction });
     });
   },
 };
