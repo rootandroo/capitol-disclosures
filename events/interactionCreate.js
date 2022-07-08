@@ -25,7 +25,6 @@ module.exports = {
       if (!guildId) return;
 
       const name = interaction.options.getFocused();
-      if (!/[a-zA-z]\s[a-zA-Z]/.test(name)) return;
 
       const results = await memberController.searchByName(name);
       await interaction.respond(
