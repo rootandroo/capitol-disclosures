@@ -6,6 +6,7 @@ const senate = require("../modules/senate-reports");
 const house = require("../modules/house-reports");
 const { MessageEmbed } = require("discord.js");
 
+
 const updateMembers = async (year) => {
   console.log("Updating Congress Members");
   const members = await fetchCongressMembers(year);
@@ -71,7 +72,7 @@ const getReportsToSendAndMarkAsSent = async () => {
   return reportsToSend;
 };
 
-const createReportEmbeds = async ({report, name=null}) => {
+const createReportEmbeds = async ({ report, name = null }) => {
   if (!name) {
     const prefix = `${report.member.position.substring(0, 3)}.`
     name = `${prefix} ${report.member.last}, ${report.member.first}`
@@ -87,23 +88,25 @@ const createReportEmbeds = async ({report, name=null}) => {
   embeds.push(reportEmbed);
   const txs = await txController.findByReportID(report._id)
   for (let tx of txs) {
+    const amount = tx.amount ? tx.amount : "N/A"
+    const comment = tx.comment ? tx.comment : "N/A"
     const txEmbed = new MessageEmbed()
       .setColor("#85bb65")
       .setTimestamp(tx.date)
       .addFields(
         { name: "Ticker", value: tx.ticker, inline: true },
         { name: "Type", value: tx.type, inline: true },
-        { name: "Amount", value: tx.amount, inline: true },
+        { name: "Amount", value: amount, inline: true },
         { name: "Owner", value: tx.owner, inline: true },
         { name: "Class", value: tx.assetType, inline: true },
-        { name: "Comment", value: tx.comment, inline: true }
+        { name: "Comment", value: comment, inline: true }
       );
     embeds.push(txEmbed);
   }
   return embeds;
 };
 
-const sendReportEmbeds = async ({ embeds, channel=null, interaction=null }) => {
+const sendReportEmbeds = async ({ embeds, channel = null, interaction = null }) => {
   for (let i = 0; i < Math.ceil(embeds.length / 10); i++) {
     const chunk = embeds.slice(i * 10, i * 10 + 9);
     if (interaction) await interaction.followUp({ embeds: chunk, ephemeral: true });

@@ -5,7 +5,7 @@ const {
   updateSenateReports,
   getReportsToSendAndMarkAsSent,
   createReportEmbeds,
-  sendReportEmbeds
+  sendReportEmbeds,
 } = require("../modules/utils");
 
 module.exports = {
@@ -21,29 +21,30 @@ module.exports = {
       const day = timestamp.getDay();
       const month = timestamp.getMonth();
       const year = timestamp.getFullYear();
-      
+
+      console.log(`Updating database for [${month}/${day}/${year}]`);
       // Fetch Congress Members
       if (month % 4 == 0 && month == day) {
         await updateMembers(year);
       }
-      
+
       // Fetch House Reports
       await updateHouseReports(year);
 
       // Fetch Senate Reports
       await updateSenateReports(year);
-      
+
       // Look for Reports to Send
       const reportsToSend = await getReportsToSendAndMarkAsSent();
-      
+
       //Send Reports
       reportsToSend.forEach(async (report) => {
         const reportEmbeds = await createReportEmbeds({ report });
         for (channelID of report.destination) {
           const channel = await client.channels.cache.get(channelID);
-          await sendReportEmbeds({embeds: reportEmbeds, channel });
-          }
-        });
+          await sendReportEmbeds({ embeds: reportEmbeds, channel });
+        }
+      });
     }, interval);
     console.log(`Ready! Logged in as ${client.user.tag}`);
   },
