@@ -6,7 +6,7 @@ let monitor = {};
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('watchEbayAuctions')
+		.setName('watch-auctions')
 		.setDescription('Toggle monitor to check for ebay auctions that are ending soon.')
         .addStringOption(option => 
             option.setName('metric')
@@ -24,9 +24,9 @@ module.exports = {
             .setDescription('Enter search query for a product.')
             .setRequired(true))
         .addIntegerOption(option => 
-            option.setName('price'))
+            option.setName('price')
             .setDescription('Filter out auctions that exceed this price.')
-            .setRequired(true),
+            .setRequired(true)),
 	async execute(interaction) {        
         if (interaction.user.id != "189469745215438849") return;
         
