@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const memberController = require("../database/controllers/memberController");
 const { isValidObjectId } = require('mongoose')
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("alias")
