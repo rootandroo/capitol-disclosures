@@ -51,7 +51,7 @@ module.exports = {
                 if (!scraper.results) return 
 
                 for (result of scraper.results) {
-                    const auctionEmbed = new MessageEmbed()
+                    const auctionEmbed = new MessageEmbed()     
                         .setTitle(result.title)
                         .setColor('#85bb65')
                         .setUrl(result.link)
