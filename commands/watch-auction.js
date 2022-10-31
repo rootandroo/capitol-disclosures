@@ -46,11 +46,11 @@ module.exports = {
 
             monitor[guildId] = setInterval(async () => {
                 const scraper = new Scraper(query, price)
-                scraper.fetchListings()
+                const results = await scraper.fetchListings()
 
-                if (!scraper.results) return 
+                if (!results) return 
 
-                for (result of scraper.results) {
+                for (result of results) {
                     const auctionEmbed = new MessageEmbed()     
                         .setTitle(result.title)
                         .setColor('#85bb65')
