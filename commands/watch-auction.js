@@ -54,7 +54,7 @@ module.exports = {
                     const auctionEmbed = new MessageEmbed()     
                         .setTitle(result.title)
                         .setColor('#85bb65')
-                        .setUrl(result.link)
+                        .setURL(result.link)
                         .addField(result.timeLeft)
                         .addField(result.price)
                     interaction.channel.send({ embeds: [auctionEmbed] });
