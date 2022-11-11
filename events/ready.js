@@ -7,6 +7,7 @@ const {
   createReportEmbeds,
   sendReportEmbeds,
 } = require("../modules/utils");
+const { sendAuctions } = require("../modules/ebay")
 
 module.exports = {
   name: "ready",
@@ -46,6 +47,11 @@ module.exports = {
         }
       });
     }, interval);
+
+    const auctionMonitor = setInterval(async () => {
+      const channel = await client.channels.cache.get('1035288898668072960')
+      await sendAuctions(channel)
+    }, 30 * 60 * 1000)
     console.log(`Ready! Logged in as ${client.user.tag}`);
   },
 };

@@ -4,7 +4,7 @@ const reportController = require("../database/controllers/reportController");
 const txController = require("../database/controllers/txController");
 const senate = require("../modules/senate-reports");
 const house = require("../modules/house-reports");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 
 const updateMembers = async (year) => {
@@ -79,7 +79,7 @@ const createReportEmbeds = async ({ report, name = null }) => {
   }
 
   const embeds = [];
-  const reportEmbed = new MessageEmbed()
+  const reportEmbed = new EmbedBuilder()
     .setColor("#85bb65")
     .setTitle("Financial Disclosure Report")
     .setURL(report.url)
@@ -90,7 +90,7 @@ const createReportEmbeds = async ({ report, name = null }) => {
   for (let tx of txs) {
     const amount = tx.amount ? tx.amount : "N/A"
     const comment = tx.comment ? tx.comment : "N/A"
-    const txEmbed = new MessageEmbed()
+    const txEmbed = new EmbedBuilder()
       .setColor("#85bb65")
       .setTimestamp(tx.date)
       .addFields(
